@@ -1,23 +1,36 @@
 var Metalsmith  = require('metalsmith');
-var markdown    = require('metalsmith-markdown');
+var collections = require('metalsmith-collections');
 var layouts     = require('metalsmith-layouts');
+var markdown    = require('metalsmith-markdown');
 var permalinks  = require('metalsmith-permalinks');
 
-Metalsmith(__dirname)
-  .metadata({
-    title: "My Static Site & Blog",
-    description: "It's about saying »Hello« to the World.",
-    generator: "Metalsmith",
-    url: "http://www.metalsmith.io/"
+
+Metalsmith(__dirname)         // __dirname defined by node.js:
+                              // name of current working directory
+  .metadata({                 // add any variable you want
+                              // use them in layout-files
+    sitename: "My Static Site & Blog",
+    siteurl: "http://example.com/",
+    description: "It's about saying »Hello« to the world.",
+    generatorname: "Metalsmith",
+    generatorurl: "http://metalsmith.io/",
+    facebookurl: "http://facebook.com/",
+    githuburl: "http://github.com/",
+    twitterurl: "http://twitter.com/"
   })
-  .source('./src')
-  .destination('./build')
-  .clean(false)
-  .use(markdown())
-  .use(permalinks())
-  .use(layouts({
-    engine: 'handlebars'
+  .source('./src')            // source directory
+  .destination('./build')     // destination directory
+  .clean(true)                // clean destination before
+  .use(collections({          // group all blog posts by internally
+    posts: 'posts/*.md'       // adding key 'collections':'posts'
+  }))                         // use `collections.posts` in layouts
+  .use(markdown())            // transpile all md into html
+  .use(permalinks({           // change URLs to permalink URLs
+    relative: false           // put css only in /css
   }))
-  .build(function(err, files) {
-    if (err) { throw err; }
+  .use(layouts({              // wrap layouts around html
+    engine: 'handlebars',     // use the layout engine you like
+  }))
+  .build(function(err) {      // build process
+    if (err) throw err;       // error handling is required
   });
