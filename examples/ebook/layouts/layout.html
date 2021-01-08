@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ description }}">
+  <meta name="layout" content="full-book">
+</head>
+<body>
+
+{{#each collections.chapters }}
+
+	{{{this.contents}}}
+
+	<div class="chapter-divider"></div>
+
+{{/each}}
+
+</body>
+</html>
